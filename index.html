@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>PlayStation Cafe Manager - PC Version</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="reports.css">
+</head>
+
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>🎮 PlayStation Cafe</h1>
+                <p>نظام إدارة المقهى - نسخة الكمبيوتر</p>
+            </div>
+            <div class="login-form">
+                <div class="form-group">
+                    <label>اسم المستخدم</label>
+                    <input type="text" id="login-username" class="input-large" placeholder="أدخل اسم المستخدم">
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" id="login-password" class="input-large" placeholder="أدخل كلمة المرور">
+                </div>
+                <button class="btn btn-primary btn-block" id="login-btn">تسجيل الدخول</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="main-app" style="display: none;">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="top-bar-left">
+                <h1 class="app-title">🎮 PlayStation Cafe Manager</h1>
+            </div>
+            <div class="top-bar-right">
+                <div class="user-info">
+                    <span class="user-name" id="current-user-name"></span>
+                    <span class="user-role" id="current-user-role"></span>
+                </div>
+                <button class="btn btn-danger btn-sm" id="logout-btn">تسجيل الخروج</button>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="devices">
+                    <span class="nav-icon">🎮</span>
+                    <span class="nav-text">الأجهزة</span>
+                </a>
+                <a href="#" class="nav-item" data-page="games">
+                    <span class="nav-icon">🎯</span>
+                    <span class="nav-text">الألعاب</span>
+                </a>
+                <a href="#" class="nav-item" data-page="products">
+                    <span class="nav-icon">🛒</span>
+                    <span class="nav-text">المنتجات</span>
+                </a>
+                <a href="#" class="nav-item" data-page="inventory">
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-text">المخزون</span>
+                </a>
+                <a href="#" class="nav-item" data-page="report">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">التقارير</span>
+                </a>
+                <a href="#" class="nav-item" data-page="users">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-text">المستخدمين</span>
+                </a>
+                <a href="#" class="nav-item" data-page="settings">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-text">الإعدادات</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+
+            <!-- DEVICES PAGE -->
+            <div id="devices-page" class="page active">
+                <div class="page-header">
+                    <h2>إدارة الأجهزة</h2>
+                    <div class="stats">
+                        <div class="stat-card available">
+                            <div class="stat-label">متاح</div>
+                            <div class="stat-value" id="available-count">20</div>
+                        </div>
+                        <div class="stat-card busy">
+                            <div class="stat-label">مشغول</div>
+                            <div class="stat-value" id="busy-count">0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="device-grid" id="device-grid"></div>
+            </div>
+
+            <!-- GAMES PAGE -->
+            <div id="games-page" class="page">
+                <div class="page-header">
+                    <h2>إدارة الألعاب</h2>
+                    <button class="btn btn-primary" id="add-game-btn">+ إضافة لعبة جديدة</button>
+                </div>
+                <div class="content-card">
+                    <div class="game-list" id="game-list"></div>
+                </div>
+            </div>
+
+            <!-- PRODUCTS PAGE -->
+            <div id="products-page" class="page">
+                <div class="page-header">
+                    <h2>إدارة المنتجات</h2>
+                    <button class="btn btn-primary" id="add-product-btn">+ إضافة منتج جديد</button>
+                </div>
+                <div class="content-card">
+                    <div class="product-list" id="product-list"></div>
+                </div>
+            </div>
+
+            <!-- INVENTORY PAGE -->
+            <div id="inventory-page" class="page">
+                <div class="page-header">
+                    <h2>إدارة المخزون</h2>
+                </div>
+                <div class="inventory-summary">
+                    <div class="summary-card">
+                        <div class="summary-icon">📦</div>
+                        <div class="summary-info">
+                            <div class="summary-label">إجمالي المنتجات</div>
+                            <div class="summary-value" id="total-products-count">0</div>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-icon">📊</div>
+                        <div class="summary-info">
+                            <div class="summary-label">إجمالي الكمية</div>
+                            <div class="summary-value" id="total-stock-count">0</div>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-icon">💰</div>
+                        <div class="summary-info">
+                            <div class="summary-label">قيمة المخزون</div>
+                            <div class="summary-value" id="total-stock-value">0 ج.م</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-card">
+                    <div class="inventory-list" id="inventory-list"></div>
+                </div>
+            </div>
+
+            <!-- REPORT PAGE (ADVANCED) -->
+            <div id="report-page" class="page">
+                <div class="page-header">
+                    <h2>التقارير المتقدمة</h2>
+                    <div class="report-controls">
+                        <div class="btn-group">
+                            <button class="btn btn-sm btn-secondary active report-period-btn"
+                                data-period="today">اليوم</button>
+                            <button class="btn btn-sm btn-secondary report-period-btn" data-period="week">أسبوع</button>
+                            <button class="btn btn-sm btn-secondary report-period-btn" data-period="month">شهر</button>
+                            <button class="btn btn-sm btn-secondary report-period-btn" data-period="all">الكل</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report Tabs -->
+                <div class="report-tabs">
+                    <button class="report-tab-btn active" data-tab="general">عام</button>
+                    <button class="report-tab-btn" data-tab="devices">الأجهزة</button>
+                    <button class="report-tab-btn" data-tab="cashiers">الموظفين</button>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="report-summary">
+                    <div class="summary-card primary">
+                        <div class="summary-icon">💵</div>
+                        <div class="summary-info">
+                            <div class="summary-label">إجمالي الإيرادات</div>
+                            <div class="summary-value" id="rep-total-revenue">0 ج.م</div>
+                        </div>
+                    </div>
+                    <div class="summary-card success">
+                        <div class="summary-icon">📋</div>
+                        <div class="summary-info">
+                            <div class="summary-label">عدد الجلسات</div>
+                            <div class="summary-value" id="rep-total-sessions">0</div>
+                        </div>
+                    </div>
+                    <div class="summary-card warning">
+                        <div class="summary-icon">🛒</div>
+                        <div class="summary-info">
+                            <div class="summary-label">مبيعات المنتجات</div>
+                            <div class="summary-value" id="rep-product-revenue">0 ج.م</div>
+                        </div>
+                    </div>
+                    <div class="summary-card accent">
+                        <div class="summary-icon">📈</div>
+                        <div class="summary-info">
+                            <div class="summary-label">صافي الربح</div>
+                            <div class="summary-value" id="rep-net-profit">0 ج.م</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Contents -->
+                <div class="report-content-area">
+                    <div id="report-general" class="report-tab-content active">
+                        <div class="content-card">
+                            <h3>سجل الجلسات</h3>
+                            <div id="report-general-list"></div>
+                        </div>
+                    </div>
+                    <div id="report-devices" class="report-tab-content">
+                        <div class="content-card">
+                            <h3>أداء الأجهزة</h3>
+                            <div id="report-devices-list"></div>
+                        </div>
+                    </div>
+                    <div id="report-cashiers" class="report-tab-content">
+                        <div class="content-card">
+                            <h3>أداء الموظفين</h3>
+                            <div id="report-cashiers-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SETTINGS PAGE -->
+            <div id="settings-page" class="page">
+                <div class="page-header">
+                    <h2>الإعدادات العامة</h2>
+                </div>
+                <div class="content-card">
+                    <div class="settings-form">
+                        <div class="form-group">
+                            <label>رمز العملة</label>
+                            <input type="text" id="currency-symbol" class="input-large" value="ج.م">
+                            <small>الرمز الذي سيظهر بجانب الأسعار</small>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn btn-primary" id="save-settings-btn">حفظ الإعدادات</button>
+                            <button class="btn btn-danger" id="reset-data-btn">مسح جميع البيانات</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- USERS PAGE -->
+            <div id="users-page" class="page">
+                <div class="page-header">
+                    <h2>إدارة المستخدمين</h2>
+                    <button class="btn btn-primary" id="add-user-btn">+ إضافة مستخدم جديد</button>
+                </div>
+                <div class="content-card">
+                    <div class="users-list" id="users-list"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODALS - Same as mobile version -->
+    <div class="modal" id="start-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>بدء جلسة جديدة</h2>
+                <button class="close-btn" onclick="closeModal('start-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="game-mode-selector">
+                    <button class="mode-btn" data-mode="multi" data-game-type="multi">
+                        <div class="mode-icon">👥</div>
+                        <div class="mode-name">مالتي</div>
+                    </button>
+                    <button class="mode-btn" data-mode="single" data-game-type="single">
+                        <div class="mode-icon">🎮</div>
+                        <div class="mode-name">فردي</div>
+                    </button>
+                </div>
+                <div id="other-games-section" style="margin-top: 20px;">
+                    <label>أو اختر لعبة أخرى:</label>
+                    <select id="game-select" class="input-large"></select>
+                </div>
+                <div class="session-type-selector" style="margin-top: 20px;">
+                    <button class="type-btn active" data-type="timed">⏱️ محدد بوقت</button>
+                    <button class="type-btn" data-type="open">🔓 مفتوح</button>
+                </div>
+                <div id="timed-input" class="time-input">
+                    <label>المدة:</label>
+                    <div class="time-selector">
+                        <div class="time-input-group">
+                            <label>ساعات</label>
+                            <input type="number" id="session-hours" min="0" value="1" class="input-large">
+                        </div>
+                        <div class="time-input-group">
+                            <label>دقائق</label>
+                            <input type="number" id="session-minutes" min="0" max="59" value="0" class="input-large">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('start-modal')">إلغاء</button>
+                <button class="btn btn-success" id="confirm-start-btn">بدء الجلسة</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="add-game-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>إضافة لعبة جديدة</h2>
+                <button class="close-btn" onclick="closeModal('add-game-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>اسم اللعبة</label>
+                    <input type="text" id="game-name" class="input-large" placeholder="مثال: بينج بونج">
+                </div>
+                <div class="form-group">
+                    <label>السعر للساعة (ج.م)</label>
+                    <input type="number" id="game-price" step="1" min="0" class="input-large" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label>الأيقونة (emoji)</label>
+                    <input type="text" id="game-icon" class="input-large" placeholder="🎮" maxlength="2">
+                    <div class="icon-suggestions">
+                        <button class="icon-btn" onclick="setGameIcon('🎮')">🎮</button>
+                        <button class="icon-btn" onclick="setGameIcon('🎯')">🎯</button>
+                        <button class="icon-btn" onclick="setGameIcon('🎱')">🎱</button>
+                        <button class="icon-btn" onclick="setGameIcon('🏓')">🏓</button>
+                        <button class="icon-btn" onclick="setGameIcon('⚽')">⚽</button>
+                        <button class="icon-btn" onclick="setGameIcon('🏀')">🏀</button>
+                        <button class="icon-btn" onclick="setGameIcon('🎲')">🎲</button>
+                        <button class="icon-btn" onclick="setGameIcon('👾')">👾</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('add-game-modal')">إلغاء</button>
+                <button class="btn btn-success" id="save-game-btn">حفظ</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="edit-game-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>تعديل اللعبة</h2>
+                <button class="close-btn" onclick="closeModal('edit-game-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>اسم اللعبة</label>
+                    <input type="text" id="edit-game-name" class="input-large">
+                </div>
+                <div class="form-group">
+                    <label>السعر للساعة (ج.م)</label>
+                    <input type="number" id="edit-game-price" step="1" min="0" class="input-large">
+                </div>
+                <div class="form-group">
+                    <label>الأيقونة (emoji)</label>
+                    <input type="text" id="edit-game-icon" class="input-large" maxlength="2">
+                    <div class="icon-suggestions">
+                        <button class="icon-btn" onclick="setEditGameIcon('🎮')">🎮</button>
+                        <button class="icon-btn" onclick="setEditGameIcon('🎯')">🎯</button>
+                        <button class="icon-btn" onclick="setEditGameIcon('🎱')">🎱</button>
+                        <button class="icon-btn" onclick="setEditGameIcon('🏓')">🏓</button>
+                        <button class="icon-btn" onclick="setEditGameIcon('⚽')">⚽</button>
+                        <button class="icon-btn" onclick="setEditGameIcon('🏀')">🏀</button>
+                        <button class="icon-btn" onclick="setEditGameIcon('🎲')">🎲</button>
+                        <button class="icon-btn" onclick="setEditGameIcon('👾')">👾</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('edit-game-modal')">إلغاء</button>
+                <button class="btn btn-success" id="update-game-btn">تحديث</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="add-product-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>إضافة منتج جديد</h2>
+                <button class="close-btn" onclick="closeModal('add-product-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>اسم المنتج</label>
+                    <input type="text" id="product-name" class="input-large" placeholder="مثال: قهوة">
+                </div>
+                <div class="form-group">
+                    <label>سعر البيع (ج.م)</label>
+                    <input type="number" id="product-price" step="1" min="0" class="input-large" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label>سعر الشراء (ج.م)</label>
+                    <input type="number" id="product-cost" step="1" min="0" class="input-large" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label>الكمية الأولية</label>
+                    <input type="number" id="product-quantity" min="0" class="input-large" placeholder="0">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('add-product-modal')">إلغاء</button>
+                <button class="btn btn-success" id="save-product-btn">حفظ</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="edit-product-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>تعديل المنتج</h2>
+                <button class="close-btn" onclick="closeModal('edit-product-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>اسم المنتج</label>
+                    <input type="text" id="edit-product-name" class="input-large">
+                </div>
+                <div class="form-group">
+                    <label>سعر البيع (ج.م)</label>
+                    <input type="number" id="edit-product-price" step="1" min="0" class="input-large">
+                </div>
+                <div class="form-group">
+                    <label>سعر الشراء (ج.م)</label>
+                    <input type="number" id="edit-product-cost" step="1" min="0" class="input-large">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('edit-product-modal')">إلغاء</button>
+                <button class="btn btn-success" id="update-product-btn">تحديث</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="restock-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>إعادة التخزين</h2>
+                <button class="close-btn" onclick="closeModal('restock-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>المنتج: <strong id="restock-product-name"></strong></label>
+                </div>
+                <div class="form-group">
+                    <label>الكمية الحالية: <strong id="restock-current-qty"></strong></label>
+                </div>
+                <div class="form-group">
+                    <label>إضافة كمية</label>
+                    <input type="number" id="restock-quantity" min="1" class="input-large" placeholder="0">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('restock-modal')">إلغاء</button>
+                <button class="btn btn-success" id="confirm-restock-btn">إضافة</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="invoice-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>الفاتورة</h2>
+                <button class="close-btn" onclick="closeModal('invoice-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="invoice-details" id="invoice-details"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" onclick="printInvoice()">🖨️ طباعة الفاتورة</button>
+                <button class="btn btn-primary" onclick="closeModal('invoice-modal')">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="sell-product-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>بيع منتج</h2>
+                <button class="close-btn" onclick="closeModal('sell-product-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="product-selection" id="product-selection"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary btn-block" onclick="closeModal('sell-product-modal')">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="transfer-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>نقل الجلسة</h2>
+                <button class="close-btn" onclick="closeModal('transfer-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>اختر الجهاز المستهدف:</p>
+                <div class="device-selection" id="transfer-device-list"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary btn-block" onclick="closeModal('transfer-modal')">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="add-user-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>إضافة مستخدم جديد</h2>
+                <button class="close-btn" onclick="closeModal('add-user-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>اسم المستخدم</label>
+                    <input type="text" id="new-username" class="input-large" placeholder="اسم المستخدم">
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" id="new-password" class="input-large" placeholder="كلمة المرور">
+                </div>
+                <div class="form-group">
+                    <label>الاسم الكامل</label>
+                    <input type="text" id="new-fullname" class="input-large" placeholder="الاسم الكامل">
+                </div>
+                <div class="form-group">
+                    <label>الدور الوظيفي</label>
+                    <select id="new-user-role" class="input-large">
+                        <option value="admin">مدير - كل الصلاحيات</option>
+                        <option value="cashier" selected>كاشير - إدارة الأجهزة والمنتجات</option>
+                        <option value="viewer">مشاهد - التقارير فقط</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('add-user-modal')">إلغاء</button>
+                <button class="btn btn-success" id="save-user-btn">حفظ</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="edit-user-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>تعديل المستخدم</h2>
+                <button class="close-btn" onclick="closeModal('edit-user-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>اسم المستخدم</label>
+                    <input type="text" id="edit-username" class="input-large" readonly style="background: #f0f0f0;">
+                    <small>لا يمكن تعديل اسم المستخدم</small>
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور الجديدة (اتركها فارغة إذا لم ترد التغيير)</label>
+                    <input type="password" id="edit-password" class="input-large" placeholder="كلمة مرور جديدة">
+                </div>
+                <div class="form-group">
+                    <label>الاسم الكامل</label>
+                    <input type="text" id="edit-fullname" class="input-large">
+                </div>
+                <div class="form-group">
+                    <label>الدور الوظيفي</label>
+                    <select id="edit-user-role" class="input-large">
+                        <option value="admin">مدير - كل الصلاحيات</option>
+                        <option value="cashier">كاشير - إدارة الأجهزة والمنتجات</option>
+                        <option value="viewer">مشاهد - التقارير فقط</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('edit-user-modal')">إلغاء</button>
+                <button class="btn btn-success" id="update-user-btn">تحديث</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Device Details Modal -->
+    <div class="modal" id="device-details-modal">
+        <div class="modal-content modal-xl">
+            <div class="modal-header">
+                <h2>📊 تفاصيل الجهاز - <span id="dd-device-name"></span></h2>
+                <button class="close-btn" onclick="closeDeviceDetails()">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                <!-- Session Info Grid -->
+                <div class="dd-section">
+                    <h3 class="dd-section-title">📋 معلومات الجلسة</h3>
+                    <div class="dd-info-grid">
+                        <div class="dd-info-item">
+                            <div class="dd-label">🕐 وقت البدء</div>
+                            <div class="dd-value" id="dd-start-time">--</div>
+                        </div>
+                        <div class="dd-info-item">
+                            <div class="dd-label">⏱️ الوقت المحجوز</div>
+                            <div class="dd-value" id="dd-booked-time">--</div>
+                        </div>
+                        <div class="dd-info-item">
+                            <div class="dd-label">⏳ الوقت المستخدم (أساسي)</div>
+                            <div class="dd-value" id="dd-base-time">--</div>
+                        </div>
+                        <div class="dd-info-item">
+                            <div class="dd-label">🔥 الوقت الإضافي</div>
+                            <div class="dd-value dd-overtime" id="dd-overtime">--</div>
+                        </div>
+                        <div class="dd-info-item">
+                            <div class="dd-label">💵 السعر/دقيقة</div>
+                            <div class="dd-value" id="dd-price-min">--</div>
+                        </div>
+                        <div class="dd-info-item">
+                            <div class="dd-label">🎮 اللعبة</div>
+                            <div class="dd-value" id="dd-game">--</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit Controls -->
+                <div class="dd-section">
+                    <h3 class="dd-section-title">✏️ تعديل البيانات</h3>
+                    <div class="dd-edit-grid">
+                        <div class="dd-edit-group">
+                            <label>⏱️ الوقت المحجوز (بالدقائق)</label>
+                            <div class="dd-edit-row">
+                                <input type="number" id="dd-edit-booked" min="1" class="dd-input">
+                                <button class="btn btn-primary btn-sm" onclick="updateBookedTime()">تحديث</button>
+                            </div>
+                        </div>
+                        <div class="dd-edit-group">
+                            <label>💵 السعر للساعة (ج.م)</label>
+                            <div class="dd-edit-row">
+                                <input type="number" id="dd-edit-price" min="0" step="1" class="dd-input">
+                                <button class="btn btn-primary btn-sm" onclick="updatePricePerHour()">تحديث</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cost Breakdown -->
+                <div class="dd-section">
+                    <h3 class="dd-section-title">💰 تفاصيل التكلفة</h3>
+                    <div class="dd-cost-box">
+                        <div class="dd-cost-row">
+                            <span>تكلفة الوقت الأساسي:</span>
+                            <span class="dd-cost-val" id="dd-base-cost">0 ج.م</span>
+                        </div>
+                        <div class="dd-cost-row dd-cost-overtime">
+                            <span>تكلفة الوقت الإضافي:</span>
+                            <span class="dd-cost-val" id="dd-overtime-cost">0 ج.م</span>
+                        </div>
+                        <div class="dd-cost-row dd-cost-total">
+                            <span><strong>الإجمالي:</strong></span>
+                            <span class="dd-cost-val" id="dd-total-cost">0 ج.م</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Invoice Control -->
+                <div class="dd-section dd-invoice-section">
+                    <h3 class="dd-section-title">🧾 التحكم في الفاتورة</h3>
+
+                    <!-- Overtime Toggle -->
+                    <div class="dd-toggle-box">
+                        <label class="dd-toggle">
+                            <input type="checkbox" id="dd-charge-overtime" onchange="toggleOvertimeCharge()">
+                            <span class="dd-toggle-slider"></span>
+                        </label>
+                        <span class="dd-toggle-label">احتساب الوقت الإضافي في الفاتورة</span>
+                    </div>
+
+                    <!-- Invoice Preview -->
+                    <div class="dd-invoice-preview">
+                        <h4>معاينة الفاتورة النهائية</h4>
+                        <div id="dd-invoice-content" class="dd-invoice-body">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="dd-section" style="margin-top: 20px;">
+                    <button class="btn btn-secondary btn-block"
+                        onclick="openTransferModal(currentDetailsDevice.id); closeDeviceDetails();">
+                        🔄 نقل الجلسة إلى جهاز آخر
+                    </button>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDeviceDetails()">إغلاق</button>
+                <button class="btn btn-success" onclick="applyAndClose()">حفظ وإغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+    <!-- Audio for timer alerts -->
+    <audio id="timer-alert" preload="auto">
+        <source
+            src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZSA0PVqzn77BdGAg+ltryxXEoBSuBzvLZiTYIGGe77eeeTRANUKfj8LdjHAY4ktfyy3ksBSR3x/DdkUAKFF606+uoVRQKRp/g8r5sIQUyh9Hz04IzBh5uwO/jmUgND1as5++wXRgIPpba8sVxKAUrgc7y2Yk2CBhnu+3nnk0QDVC"
+            type="audio/wav">
+    </audio>
+</body>
+
+</html>

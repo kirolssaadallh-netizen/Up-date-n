@@ -1,0 +1,95 @@
+/* Report Tabs */
+.report-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+}
+
+.report-tab-btn {
+    padding: 10px 20px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--gray);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.report-tab-btn:hover {
+    color: var(--primary);
+}
+
+.report-tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+}
+
+.report-tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.report-tab-content.active {
+    display: block;
+}
+
+/* Report Tables */
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.report-table th,
+.report-table td {
+    padding: 12px 15px;
+    text-align: right;
+    border-bottom: 1px solid #eee;
+}
+
+.report-table th {
+    background-color: #f8f9fa;
+    color: var(--dark);
+    font-weight: 700;
+}
+
+.report-table tr:hover {
+    background-color: #f1f2f6;
+}
+
+.text-xs { font-size: 0.85em; }
+.text-gray { color: var(--gray); }
+.text-danger { color: var(--danger); font-weight: bold; }
+.text-success { color: var(--success); font-weight: bold; }
+.font-bold { font-weight: bold; }
+
+/* Button Group for Filters */
+.btn-group {
+    display: flex;
+    gap: 5px;
+    background: #e0e0e0;
+    padding: 4px;
+    border-radius: 8px;
+}
+
+.btn-group .btn {
+    border-radius: 6px;
+    padding: 6px 12px;
+    background: transparent;
+    color: #666;
+}
+
+.btn-group .btn.active {
+    background: white;
+    color: var(--primary);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
